@@ -56,13 +56,13 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun launchMainService() {
-
-        val svc = Intent(this, MainService::class.java)
-
-        stopService(svc)
-        startService(svc)
-    }
+//    private fun launchMainService() {
+//
+//        val svc = Intent(this, MainService::class.java)
+//
+//        stopService(svc)
+//        startService(svc)
+//    }
 
     private fun checkDrawOverlayPermission() {
 
@@ -87,7 +87,7 @@ class SettingsActivity : AppCompatActivity() {
             if (Settings.canDrawOverlays(this)) {
 
                 // Launch the service
-                launchMainService()
+//                launchMainService()
             } else {
 
                 Toast.makeText(this, "Sorry. Can't draw overlays without permission...", Toast.LENGTH_SHORT).show()
