@@ -23,6 +23,15 @@ class SettingsActivity : AppCompatActivity() {
                 .replace(R.id.settings, SettingsFragment())
                 .commit()
 //        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        if (Settings.canDrawOverlays(this)) {
+
+            // Launch service right away - the user has already previously granted permission
+//            launchMainService()
+        } else {
+
+            // Check that the user has granted permission, and prompt them if not
+            checkDrawOverlayPermission()
+        }
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
@@ -41,28 +50,6 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-
-        if (Settings.canDrawOverlays(this)) {
-
-            // Launch service right away - the user has already previously granted permission
-//            launchMainService()
-        } else {
-
-            // Check that the user has granted permission, and prompt them if not
-            checkDrawOverlayPermission()
-        }
-    }
-
-//    private fun launchMainService() {
-//
-//        val svc = Intent(this, MainService::class.java)
-//
-//        stopService(svc)
-//        startService(svc)
-//    }
 
     private fun checkDrawOverlayPermission() {
 
@@ -90,7 +77,7 @@ class SettingsActivity : AppCompatActivity() {
 //                launchMainService()
             } else {
 
-                Toast.makeText(this, "Sorry. Can't draw overlays without permission...", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Sorry. Can't draw STREAM_MUSIC volume percentage overlays without permission...", Toast.LENGTH_SHORT).show()
             }
         }
     }
