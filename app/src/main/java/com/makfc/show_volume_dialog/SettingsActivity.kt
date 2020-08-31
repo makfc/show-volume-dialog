@@ -13,7 +13,7 @@ class SettingsActivity : AppCompatActivity() {
     companion object {
         const val TAG = BuildConfig.APPLICATION_ID
         private const val REQUEST_CODE = 10101
-        val ACTION_BROADCAST = "Broadcast"
+        const val ACTION_BROADCAST = "Broadcast"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,8 +45,7 @@ class SettingsActivity : AppCompatActivity() {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
         }
         override fun onPreferenceTreeClick(preference: Preference): Boolean {
-            val key: String = preference.key
-            return when (key) {
+            return when (preference.key) {
                 "show" -> {
                     val intent = Intent(context, MyBroadcastReceiver::class.java)
                     context?.sendBroadcast(intent)
