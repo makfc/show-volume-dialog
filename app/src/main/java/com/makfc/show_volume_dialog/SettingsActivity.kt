@@ -13,6 +13,7 @@ class SettingsActivity : AppCompatActivity() {
     companion object {
         const val TAG = BuildConfig.APPLICATION_ID
         private const val REQUEST_CODE = 10101
+        val ACTION_BROADCAST = "Broadcast"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,12 +27,17 @@ class SettingsActivity : AppCompatActivity() {
         if (Settings.canDrawOverlays(this)) {
 
             // Launch service right away - the user has already previously granted permission
-//            launchMainService()
+            launchMainService()
         } else {
 
             // Check that the user has granted permission, and prompt them if not
             checkDrawOverlayPermission()
         }
+    }
+
+    private fun launchMainService() {
+        val svc = Intent(this, MainService::class.java)
+        startService(svc)
     }
 
     class SettingsFragment : PreferenceFragmentCompat() {
@@ -74,7 +80,7 @@ class SettingsActivity : AppCompatActivity() {
             if (Settings.canDrawOverlays(this)) {
 
                 // Launch the service
-//                launchMainService()
+                launchMainService()
             } else {
 
                 Toast.makeText(this, "Sorry. Can't draw STREAM_MUSIC volume percentage overlays without permission...", Toast.LENGTH_SHORT).show()
