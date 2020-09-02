@@ -5,8 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.makfc.show_volume_dialog.SettingsActivity.Companion.ACTION_BROADCAST
 import kotlin.math.ceil
 
 class VolumeChangeBroadcastReceiver : BroadcastReceiver() {
@@ -22,9 +20,9 @@ class VolumeChangeBroadcastReceiver : BroadcastReceiver() {
             val volume = intent.extras!!["android.media.EXTRA_VOLUME_STREAM_VALUE"] as Int
             val percent = ceil(volume / 30f * 100).toInt()
 
-            val intent1 = Intent(ACTION_BROADCAST)
-            intent1.putExtra("volume", "$percent%")
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent1)
+            val svc = Intent(context, MainService::class.java)
+            svc.putExtra("volume", "$percent%");
+            context.startService(svc)
         }.start()
     }
 }

@@ -3,8 +3,14 @@
 
     <PreferenceCategory app:title="Test">
         <Preference
-            android:key="show"
+            android:key="show_volume_dialog"
             app:title="@string/app_name"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="Preference">
+        <SwitchPreference
+            android:key="show_volume_percentage"
+            app:title="@string/show_volume_percentage"
             />
     </PreferenceCategory>
 </PreferenceScreen>

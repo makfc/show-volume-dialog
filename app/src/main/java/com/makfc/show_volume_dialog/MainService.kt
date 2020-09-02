@@ -1,10 +1,8 @@
 package com.makfc.show_volume_dialog
 
 import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.PixelFormat
 import android.os.Handler
 import android.os.Handler.Callback
@@ -18,9 +16,6 @@ import android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
 import android.view.WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
 import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.makfc.show_volume_dialog.SettingsActivity.Companion.ACTION_BROADCAST
-
 
 class MainService : Service(), View.OnTouchListener {
     private lateinit var params: LayoutParams
@@ -41,28 +36,26 @@ class MainService : Service(), View.OnTouchListener {
     override fun onCreate() {
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         addOverlayView()
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-            object : BroadcastReceiver() {
-                override fun onReceive(context: Context, intent: Intent) {
-                    timeoutHandler.removeMessages(1)
+    }
+
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        timeoutHandler.removeMessages(1)
 //                    Log.d(TAG, "onReceive: $ACTION_BROADCAST")
-                    val volume = intent.getStringExtra("volume")
+        val volume = intent.getStringExtra("volume")
 //                    Log.d(TAG, "volume: $volume")
-                    floatyView?.let {
-                        it.findViewById<TextView>(R.id.tv_volume).apply {
-                            text = volume
-                            it.alpha = 1F
-                            val msg = Message.obtain()
-                            msg.what = 1
-                            msg.obj = Runnable { dismiss() }
-                            timeoutHandler.sendMessageDelayed(msg, 2000)
-                        }
-                        if (it.windowToken == null)
-                            windowManager.addView(floatyView, params)
-                    }
-                }
-            }, IntentFilter(ACTION_BROADCAST)
-        )
+        floatyView?.let {
+            it.findViewById<TextView>(R.id.tv_volume).apply {
+                text = volume
+                it.alpha = 1F
+                val msg = Message.obtain()
+                msg.what = 1
+                msg.obj = Runnable { dismiss() }
+                timeoutHandler.sendMessageDelayed(msg, 2000)
+            }
+            if (it.windowToken == null)
+                windowManager.addView(floatyView, params)
+        }
+        return super.onStartCommand(intent, flags, startId)
     }
 
     private fun addOverlayView() {

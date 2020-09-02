@@ -19,4 +19,5 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
     <string name="bugdroid_ghost">The Android bug-droid with a transparent background</string>
+    <string name="show_volume_percentage">Show volume percentage when volume change</string>
 </resources>
