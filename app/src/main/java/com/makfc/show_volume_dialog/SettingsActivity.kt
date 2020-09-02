@@ -44,7 +44,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun unregisterReceiver() {
         try {
-            unregisterReceiver(receiver);
+            unregisterReceiver(receiver)
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         }
@@ -78,7 +78,7 @@ class SettingsActivity : AppCompatActivity() {
             val settingsActivity = activity as SettingsActivity
             when (key) {
                 "show_volume_percentage" -> {
-                    if (sharedPreferences.getBoolean("show_volume_percentage", true)) {
+                    if (sharedPreferences.getBoolean("show_volume_percentage", false)) {
                         if (Settings.canDrawOverlays(context)) {
                             settingsActivity.registerReceiver()
                         } else {
