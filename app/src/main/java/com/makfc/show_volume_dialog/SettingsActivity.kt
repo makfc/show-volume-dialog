@@ -1,9 +1,9 @@
 package com.makfc.show_volume_dialog
 
-import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
@@ -18,9 +18,7 @@ class SettingsActivity : AppCompatActivity() {
     companion object {
         const val TAG = BuildConfig.APPLICATION_ID
         private const val REQUEST_CODE = 10101
-        const val VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION"
-        val receiver: BroadcastReceiver = VolumeChangeBroadcastReceiver()
-        var switchPreference : SwitchPreference? = null
+        var switchPreference: SwitchPreference? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,24 +28,6 @@ class SettingsActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.settings, SettingsFragment())
             .commit()
-    }
-
-    private fun registerReceiver() {
-        try {
-            val filter = IntentFilter()
-            filter.addAction(VOLUME_CHANGED_ACTION)
-            registerReceiver(receiver, filter)
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun unregisterReceiver() {
-        try {
-            unregisterReceiver(receiver)
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-        }
     }
 
     class SettingsFragment : PreferenceFragmentCompat(),
@@ -78,14 +58,23 @@ class SettingsActivity : AppCompatActivity() {
             val settingsActivity = activity as SettingsActivity
             when (key) {
                 "show_volume_percentage" -> {
-                    if (sharedPreferences.getBoolean("show_volume_percentage", false)) {
-                        if (Settings.canDrawOverlays(context)) {
-                            settingsActivity.registerReceiver()
-                        } else {
-                            settingsActivity.checkDrawOverlayPermission()
-                        }
-                    } else {
-                        settingsActivity.unregisterReceiver()
+                    val enabled: Boolean =
+                        sharedPreferences.getBoolean("show_volume_percentage", false)
+                    val flag =
+                        if (enabled) PackageManager.COMPONENT_ENABLED_STATE_ENABLED
+                        else PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+                    val component =
+                        ComponentName(
+                            (activity as SettingsActivity).baseContext,
+                            VolumeChangeBroadcastReceiver::class.java
+                        )
+                    context?.packageManager
+                        ?.setComponentEnabledSetting(
+                            component, flag,
+                            PackageManager.DONT_KILL_APP
+                        )
+                    if (enabled && !Settings.canDrawOverlays(context)) {
+                        settingsActivity.checkDrawOverlayPermission()
                     }
                 }
             }
@@ -125,9 +114,7 @@ class SettingsActivity : AppCompatActivity() {
         if (requestCode == REQUEST_CODE) {
 
             // Double-check that the user granted it, and didn't just dismiss the request
-            if (Settings.canDrawOverlays(this)) {
-                registerReceiver()
-            } else {
+            if (!Settings.canDrawOverlays(this)) {
                 Toast.makeText(
                     this,
                     "Sorry. Can't draw STREAM_MUSIC volume percentage overlays without permission...",
