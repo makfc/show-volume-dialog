@@ -43,17 +43,19 @@ class MainService : Service(), View.OnTouchListener {
 //                    Log.d(TAG, "onReceive: $ACTION_BROADCAST")
         val volume = intent.getStringExtra("volume")
 //                    Log.d(TAG, "volume: $volume")
-        floatyView?.let {
-            it.findViewById<TextView>(R.id.tv_volume).apply {
-                text = volume
-                it.alpha = 1F
-                val msg = Message.obtain()
-                msg.what = 1
-                msg.obj = Runnable { dismiss() }
-                timeoutHandler.sendMessageDelayed(msg, 2000)
+        if (volume != null) {
+            floatyView?.let {
+                it.findViewById<TextView>(R.id.tv_volume).apply {
+                    text = volume
+                    it.alpha = 1F
+                    val msg = Message.obtain()
+                    msg.what = 1
+                    msg.obj = Runnable { dismiss() }
+                    timeoutHandler.sendMessageDelayed(msg, 2000)
+                }
+                if (it.windowToken == null)
+                    windowManager.addView(floatyView, params)
             }
-            if (it.windowToken == null)
-                windowManager.addView(floatyView, params)
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -97,6 +99,7 @@ class MainService : Service(), View.OnTouchListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        println("MainService onDestroy")
         floatyView?.let {
             windowManager.removeView(it)
             floatyView = null

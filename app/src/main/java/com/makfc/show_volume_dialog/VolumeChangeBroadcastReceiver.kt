@@ -16,6 +16,7 @@ class VolumeChangeBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Thread {
             val stream = intent.extras?.getInt(EXTRA_VOLUME_STREAM_TYPE)
+//            println("onReceive: $stream")
             if (stream != AudioManager.STREAM_MUSIC) return@Thread
             val volume = intent.extras!!["android.media.EXTRA_VOLUME_STREAM_VALUE"] as Int
             val percent = ceil(volume / 30f * 100).toInt()

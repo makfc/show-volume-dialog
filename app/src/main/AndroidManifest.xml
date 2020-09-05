@@ -35,8 +35,8 @@
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED" />
         <receiver
-            android:enabled="true"
             android:name=".BootUpReceiver"
+            android:enabled="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -45,7 +45,8 @@
         </receiver>
         <service
             android:name=".MainService"
-            android:exported="false" />
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" />
     </application>
 
 </manifest>
